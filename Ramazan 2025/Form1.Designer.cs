@@ -38,6 +38,7 @@
             btnSettings = new Label();
             lblKalanZaman = new Label();
             timerKalanSure = new System.Windows.Forms.Timer(components);
+            reminderNotification = new NotifyIcon(components);
             SuspendLayout();
             // 
             // lblTime1
@@ -45,7 +46,7 @@
             lblTime1.AutoSize = true;
             lblTime1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime1.ForeColor = Color.WhiteSmoke;
-            lblTime1.Location = new Point(29, 130);
+            lblTime1.Location = new Point(29, 102);
             lblTime1.Name = "lblTime1";
             lblTime1.Size = new Size(51, 21);
             lblTime1.TabIndex = 0;
@@ -56,7 +57,7 @@
             lblTime2.AutoSize = true;
             lblTime2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime2.ForeColor = Color.WhiteSmoke;
-            lblTime2.Location = new Point(29, 160);
+            lblTime2.Location = new Point(29, 132);
             lblTime2.Name = "lblTime2";
             lblTime2.Size = new Size(54, 21);
             lblTime2.TabIndex = 1;
@@ -67,7 +68,7 @@
             lblTime3.AutoSize = true;
             lblTime3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime3.ForeColor = Color.WhiteSmoke;
-            lblTime3.Location = new Point(29, 190);
+            lblTime3.Location = new Point(29, 162);
             lblTime3.Name = "lblTime3";
             lblTime3.Size = new Size(54, 21);
             lblTime3.TabIndex = 2;
@@ -78,7 +79,7 @@
             lblTime4.AutoSize = true;
             lblTime4.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime4.ForeColor = Color.WhiteSmoke;
-            lblTime4.Location = new Point(29, 220);
+            lblTime4.Location = new Point(29, 192);
             lblTime4.Name = "lblTime4";
             lblTime4.Size = new Size(54, 21);
             lblTime4.TabIndex = 3;
@@ -89,7 +90,7 @@
             lblTime5.AutoSize = true;
             lblTime5.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime5.ForeColor = Color.WhiteSmoke;
-            lblTime5.Location = new Point(29, 250);
+            lblTime5.Location = new Point(29, 222);
             lblTime5.Name = "lblTime5";
             lblTime5.Size = new Size(54, 21);
             lblTime5.TabIndex = 4;
@@ -98,20 +99,20 @@
             // Title
             // 
             Title.AutoSize = true;
-            Title.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            Title.ForeColor = Color.WhiteSmoke;
-            Title.Location = new Point(34, 18);
+            Title.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            Title.ForeColor = Color.White;
+            Title.Location = new Point(5, 6);
             Title.Name = "Title";
-            Title.Size = new Size(152, 42);
+            Title.Size = new Size(85, 15);
             Title.TabIndex = 5;
-            Title.Text = "2025\r\nRamazan İmsakiyesi";
+            Title.Text = "İmsakiye 2025";
             Title.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // btnClose
             // 
             btnClose.AutoSize = true;
             btnClose.Font = new Font("Webdings", 11.25F, FontStyle.Bold);
-            btnClose.ForeColor = Color.WhiteSmoke;
+            btnClose.ForeColor = Color.White;
             btnClose.Location = new Point(193, 3);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(25, 20);
@@ -122,11 +123,11 @@
             // btnSettings
             // 
             btnSettings.AutoSize = true;
-            btnSettings.Font = new Font("Segoe UI Symbol", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSettings.ForeColor = Color.WhiteSmoke;
-            btnSettings.Location = new Point(174, 3);
+            btnSettings.Font = new Font("Segoe UI Symbol", 12F, FontStyle.Bold);
+            btnSettings.ForeColor = Color.White;
+            btnSettings.Location = new Point(173, 2);
             btnSettings.Name = "btnSettings";
-            btnSettings.Size = new Size(23, 20);
+            btnSettings.Size = new Size(24, 21);
             btnSettings.TabIndex = 7;
             btnSettings.Text = "⚙";
             btnSettings.Click += btnSettings_Click;
@@ -135,11 +136,11 @@
             // 
             lblKalanZaman.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblKalanZaman.ForeColor = Color.WhiteSmoke;
-            lblKalanZaman.Location = new Point(50, 69);
+            lblKalanZaman.Location = new Point(50, 41);
             lblKalanZaman.Name = "lblKalanZaman";
             lblKalanZaman.Size = new Size(120, 42);
             lblKalanZaman.TabIndex = 8;
-            lblKalanZaman.Text = "Kalan Süre:\r\n08:02:25";
+            lblKalanZaman.Text = "Kalan Süre\r\n08:02:25";
             lblKalanZaman.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // timerKalanSure
@@ -148,12 +149,17 @@
             timerKalanSure.Interval = 1000;
             timerKalanSure.Tick += timerKalanSure_Tick;
             // 
+            // reminderNotification
+            // 
+            reminderNotification.Text = "Ramazan 2025";
+            reminderNotification.Visible = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
-            ClientSize = new Size(220, 300);
+            ClientSize = new Size(220, 270);
             Controls.Add(lblKalanZaman);
             Controls.Add(btnSettings);
             Controls.Add(btnClose);
@@ -186,5 +192,6 @@
         private Label btnSettings;
         private Label lblKalanZaman;
         private System.Windows.Forms.Timer timerKalanSure;
+        private NotifyIcon reminderNotification;
     }
 }

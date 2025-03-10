@@ -16,16 +16,21 @@ namespace Ramazan_2025
         private string Fajr, Dhuhr, Asr, Maghrib, Isha;
         private string TomorrowFajr; // Yarýnýn sahur vakti için deðiþken
         private DateTime sonKontrolEdilenGun = DateTime.Now.Date; // Baþlangýçta bugünü saklýyoruz
-        private DateTime sahurVakti, iftarVakti, yarinSahurVakti;
         private System.Windows.Forms.Label aktifLabel = null;
 
-        private async Task GetNamazVakitleri(string city) {
+        private async Task GetNamazVakitleri() {
+            string selectedCity = Properties.Settings.Default.SelectedCity;
+
+            // Þehir seçilmemiþse varsayýlan olarak Ýstanbul kullan
+            if (string.IsNullOrEmpty(selectedCity)) {
+                selectedCity = "Ýstanbul";
+            }
             using (HttpClient client = new HttpClient()) {
                 string todayDate = DateTime.Now.ToString("dd-MM-yyyy");
                 string tomorrowDate = DateTime.Now.AddDays(1).ToString("dd-MM-yyyy");
 
-                string todayUrl = $"http://api.aladhan.com/v1/timingsByCity/{todayDate}?city={city}&country=Turkey&method=13";
-                string tomorrowUrl = $"http://api.aladhan.com/v1/timingsByCity/{tomorrowDate}?city={city}&country=Turkey&method=13";
+                string todayUrl = $"http://api.aladhan.com/v1/timingsByCity/{todayDate}?city={selectedCity}&country=Turkey&method=13";
+                string tomorrowUrl = $"http://api.aladhan.com/v1/timingsByCity/{tomorrowDate}?city={selectedCity}&country=Turkey&method=13";
 
                 var todayResponse = await client.GetStringAsync(todayUrl);
                 var tomorrowResponse = await client.GetStringAsync(tomorrowUrl);
@@ -49,6 +54,7 @@ namespace Ramazan_2025
                 lblTime4.Text = $"Akþam: {Maghrib}";
                 lblTime5.Text = $"Yatsý: {Isha}";
             }
+            GC.Collect();
         }
 
         private async void timerKalanSure_Tick(object sender, EventArgs e) {
@@ -57,9 +63,13 @@ namespace Ramazan_2025
 
             // Eðer gün deðiþtiyse, namaz vakitlerini güncelle
             if (sonKontrolEdilenGun != today) {
-                await GetNamazVakitleri("Sakarya"); // Yeni namaz vakitlerini çek
+                await GetNamazVakitleri(); // Yeni namaz vakitlerini çek
                 sonKontrolEdilenGun = today; // Son kontrol edilen günü güncelle
             }
+
+            DateTime sahurVakti = DateTime.Parse(Fajr);
+            DateTime iftarVakti = DateTime.Parse(Maghrib);
+            DateTime yarinSahurVakti = DateTime.Parse(TomorrowFajr);
 
             // Bugüne eklenmiþ saatleri oluþtur
             sahurVakti = today.Add(sahurVakti.TimeOfDay);
@@ -72,10 +82,14 @@ namespace Ramazan_2025
                 TimeSpan kalanSure = sahurVakti - simdikiZaman;
                 lblKalanZaman.Text = $"Kalan Süre:\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
                 yeniAktifLabel = lblTime1;
+                // **Bildirim Ayarý Aktifse ve 15 dakika kaldýysa bildirim göster
+                if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Sahur Vakti Yaklaþýyor!", "Sahura 15 dakika kaldý.");
             } else if (simdikiZaman > sahurVakti && simdikiZaman < iftarVakti) {
                 TimeSpan kalanSure = iftarVakti - simdikiZaman;
                 lblKalanZaman.Text = $"Kalan Süre:\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
                 yeniAktifLabel = lblTime4;
+                // **Bildirim Ayarý Aktifse ve 15 dakika kaldýysa bildirim göster
+                if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Ýftar Vakti Yaklaþýyor!", "Ýftara 15 dakika kaldý.");
             } else {
                 TimeSpan kalanSure = yarinSahurVakti - simdikiZaman;
                 lblKalanZaman.Text = $"Kalan Süre:\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
@@ -90,13 +104,23 @@ namespace Ramazan_2025
                 }
             }
         }
+        private void ShowNotification(string title, string message) {
+            reminderNotification.Icon = SystemIcons.Information;
+            reminderNotification.Visible = true;
+            reminderNotification.BalloonTipTitle = title;
+            reminderNotification.BalloonTipText = message;
+            reminderNotification.ShowBalloonTip(3000);
+        }
 
         private async void Form1_Load_1(object sender, EventArgs e) {
-            await GetNamazVakitleri("Sakarya");
+            //Properties.Settings.Default.Reset();
+            //Properties.Settings.Default.Save(); 
+            await GetNamazVakitleri();
         }
 
         private void btnSettings_Click(object sender, EventArgs e) {
-           
+            FormSettings settingsForm = new FormSettings();
+            settingsForm.ShowDialog();
         }
         private void btnClose_Click(object sender, EventArgs e) => Application.Exit();
 
