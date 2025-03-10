@@ -39,6 +39,7 @@
             lblKalanZaman = new Label();
             timerKalanSure = new System.Windows.Forms.Timer(components);
             reminderNotification = new NotifyIcon(components);
+            lblChangeSize = new Label();
             SuspendLayout();
             // 
             // lblTime1
@@ -48,9 +49,9 @@
             lblTime1.ForeColor = Color.WhiteSmoke;
             lblTime1.Location = new Point(29, 102);
             lblTime1.Name = "lblTime1";
-            lblTime1.Size = new Size(51, 21);
+            lblTime1.Size = new Size(61, 21);
             lblTime1.TabIndex = 0;
-            lblTime1.Text = "label1";
+            lblTime1.Text = "İmsak: ";
             // 
             // lblTime2
             // 
@@ -59,9 +60,9 @@
             lblTime2.ForeColor = Color.WhiteSmoke;
             lblTime2.Location = new Point(29, 132);
             lblTime2.Name = "lblTime2";
-            lblTime2.Size = new Size(54, 21);
+            lblTime2.Size = new Size(63, 21);
             lblTime2.TabIndex = 1;
-            lblTime2.Text = "label2";
+            lblTime2.Text = "Güneş: ";
             // 
             // lblTime3
             // 
@@ -70,9 +71,9 @@
             lblTime3.ForeColor = Color.WhiteSmoke;
             lblTime3.Location = new Point(29, 162);
             lblTime3.Name = "lblTime3";
-            lblTime3.Size = new Size(54, 21);
+            lblTime3.Size = new Size(53, 21);
             lblTime3.TabIndex = 2;
-            lblTime3.Text = "label3";
+            lblTime3.Text = "Öğle: ";
             // 
             // lblTime4
             // 
@@ -81,9 +82,9 @@
             lblTime4.ForeColor = Color.WhiteSmoke;
             lblTime4.Location = new Point(29, 192);
             lblTime4.Name = "lblTime4";
-            lblTime4.Size = new Size(54, 21);
+            lblTime4.Size = new Size(58, 21);
             lblTime4.TabIndex = 3;
-            lblTime4.Text = "label4";
+            lblTime4.Text = "İkindi: ";
             // 
             // lblTime5
             // 
@@ -92,9 +93,9 @@
             lblTime5.ForeColor = Color.WhiteSmoke;
             lblTime5.Location = new Point(29, 222);
             lblTime5.Name = "lblTime5";
-            lblTime5.Size = new Size(54, 21);
+            lblTime5.Size = new Size(51, 21);
             lblTime5.TabIndex = 4;
-            lblTime5.Text = "label5";
+            lblTime5.Text = "Yatsı: ";
             // 
             // Title
             // 
@@ -154,12 +155,25 @@
             reminderNotification.Text = "Ramazan 2025";
             reminderNotification.Visible = true;
             // 
+            // lblChangeSize
+            // 
+            lblChangeSize.AutoSize = true;
+            lblChangeSize.Font = new Font("Segoe UI Symbol", 11F, FontStyle.Bold);
+            lblChangeSize.ForeColor = Color.White;
+            lblChangeSize.Location = new Point(151, 3);
+            lblChangeSize.Name = "lblChangeSize";
+            lblChangeSize.Size = new Size(25, 20);
+            lblChangeSize.TabIndex = 9;
+            lblChangeSize.Text = "⏶";
+            lblChangeSize.Click += lblChangeSize_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(220, 270);
+            Controls.Add(lblChangeSize);
             Controls.Add(lblKalanZaman);
             Controls.Add(btnSettings);
             Controls.Add(btnClose);
@@ -171,7 +185,7 @@
             Controls.Add(lblTime1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Form1";
-            Opacity = 0.9D;
+            Opacity = 0.82D;
             ShowInTaskbar = false;
             Text = "Ramazan 2025";
             Load += Form1_Load_1;
@@ -194,5 +208,6 @@
         private Label lblKalanZaman;
         private System.Windows.Forms.Timer timerKalanSure;
         private NotifyIcon reminderNotification;
+        private Label lblChangeSize;
     }
 }

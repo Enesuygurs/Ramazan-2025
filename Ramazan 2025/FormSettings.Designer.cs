@@ -91,7 +91,7 @@
             ForeColor = SystemColors.ControlText;
             FormBorderStyle = FormBorderStyle.None;
             Name = "FormSettings";
-            Opacity = 0.9D;
+            Opacity = 0.82D;
             ShowInTaskbar = false;
             Text = "Settings";
             MouseDown += FormSettings_MouseDown;

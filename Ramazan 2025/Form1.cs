@@ -1,9 +1,3 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Windows.Forms;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 
 namespace Ramazan_2025
@@ -32,8 +26,17 @@ namespace Ramazan_2025
 
         public Form1() {
             InitializeComponent();
+            SetWindowPos(this.Handle, (IntPtr)HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW); // Widget olarak ayarla
+            SetFormPosition(); // Formun konumunu ayarlayan metod
         }
 
+        private async void Form1_Load_1(object sender, EventArgs e) {
+            //Properties.Settings.Default.Reset();
+            //Properties.Settings.Default.Save(); 
+            await GetNamazVakitleri();
+        }
+
+        #region Ramadan Timetable Operations 
         public async Task GetNamazVakitleri() {
             string selectedCity = Properties.Settings.Default.SelectedCity ?? "Ýstanbul";
 
@@ -74,24 +77,23 @@ namespace Ramazan_2025
             sahurVakti = today.Add(sahurVakti.TimeOfDay);
             iftarVakti = today.Add(iftarVakti.TimeOfDay);
             yarinSahurVakti = today.AddDays(1).Add(yarinSahurVakti.TimeOfDay);
-
             System.Windows.Forms.Label yeniAktifLabel = null;
 
             if (simdikiZaman < sahurVakti) {
                 TimeSpan kalanSure = sahurVakti - simdikiZaman;
-                lblKalanZaman.Text = $"Kalan Süre:\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
+                lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
                 yeniAktifLabel = lblTime1;
                 // **Bildirim Ayarý Aktifse ve 15 dakika kaldýysa bildirim göster
                 if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Sahur Vakti Yaklaþýyor!", "Sahura 15 dakika kaldý.");
             } else if (simdikiZaman > sahurVakti && simdikiZaman < iftarVakti) {
                 TimeSpan kalanSure = iftarVakti - simdikiZaman;
-                lblKalanZaman.Text = $"Kalan Süre:\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
+                lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
                 yeniAktifLabel = lblTime4;
                 // **Bildirim Ayarý Aktifse ve 15 dakika kaldýysa bildirim göster
                 if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Ýftar Vakti Yaklaþýyor!", "Ýftara 15 dakika kaldý.");
             } else {
                 TimeSpan kalanSure = yarinSahurVakti - simdikiZaman;
-                lblKalanZaman.Text = $"Kalan Süre:\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
+                lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
                 yeniAktifLabel = lblTime1;
             }
 
@@ -103,6 +105,9 @@ namespace Ramazan_2025
                 }
             }
         }
+        #endregion
+
+        #region Notifications
         private void ShowNotification(string title, string message) {
             reminderNotification.Icon = SystemIcons.Information;
             reminderNotification.Visible = true;
@@ -110,32 +115,50 @@ namespace Ramazan_2025
             reminderNotification.BalloonTipText = message;
             reminderNotification.ShowBalloonTip(3000);
         }
+        #endregion
 
-        private async void Form1_Load_1(object sender, EventArgs e) {
-            //Properties.Settings.Default.Reset();
-            //Properties.Settings.Default.Save(); 
-            await GetNamazVakitleri();
-            SetWindowPos(this.Handle, (IntPtr)HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
-        }
-
+        #region Buttons
         private void btnSettings_Click(object sender, EventArgs e) {
             FormSettings settingsForm = new FormSettings();
             settingsForm.CityChanged += async (s, ev) => await GetNamazVakitleri(); // Event'i dinliyoruz
             // Form1'in konumunu al
             int form1X = this.Location.X;
             int form1Y = this.Location.Y;
-
             // FormSettings'in konumunu ayarla (Form1'in hemen sol üstünde)
             settingsForm.StartPosition = FormStartPosition.Manual; // Manuel konumlandýrma yapacaðýz
             settingsForm.Location = new Point(form1X - settingsForm.Width - 2, form1Y); // Sol üst kenara al
             settingsForm.ShowDialog();
         }
+
         private void btnClose_Click(object sender, EventArgs e) => Application.Exit();
+        #endregion
 
         #region Movable Form
         private Point mouseLocation;
         private void Form1_MouseMove(object sender, MouseEventArgs e) { if (e.Button == MouseButtons.Left) this.Location = new Point(Control.MousePosition.X + mouseLocation.X, Control.MousePosition.Y + mouseLocation.Y); }
         private void Form1_MouseDown(object sender, MouseEventArgs e) => mouseLocation = new Point(-e.X, -e.Y);
         #endregion
+
+        #region Change Widget Size
+        private void lblChangeSize_Click(object sender, EventArgs e) {
+            if (this.Size == new System.Drawing.Size(220, 270)) {
+                // Eðer boyut 220x270 ise, 220x100 yap
+                this.Size = new System.Drawing.Size(220, 100);
+            } else if (this.Size == new System.Drawing.Size(220, 100)) {
+                // Eðer boyut 220x100 ise, 220x270 yap
+                this.Size = new System.Drawing.Size(220, 270);
+            }
+        }
+        #endregion
+
+        #region Startup Position
+        private void SetFormPosition() {
+            int pointX = Screen.PrimaryScreen.Bounds.Width - this.Width - 50; // Sað kenardan 50 piksel içeri
+            int pointY = 50; // Üst kenardan 50 piksel aþaðý
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point(pointX, pointY);
+        }
+        #endregion
+
     }
 }
