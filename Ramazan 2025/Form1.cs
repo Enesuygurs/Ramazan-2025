@@ -9,52 +9,38 @@ namespace Ramazan_2025
 {
     public partial class Form1 : Form {
 
+        #region Fields
+        private string _fajr, _dhuhr, _asr, _maghrib, _isha;
+        private string _tomorrowFajr;
+        private DateTime _sonKontrolEdilenGun = DateTime.Now.Date;
+        private System.Windows.Forms.Label _aktifLabel = null;
+        private PrayerTimes _prayerTimes = new PrayerTimes();
+        #endregion
+
         public Form1() {
             InitializeComponent();
         }
 
-        private string Fajr, Dhuhr, Asr, Maghrib, Isha;
-        private string TomorrowFajr; // Yarýnýn sahur vakti için deðiþken
-        private DateTime sonKontrolEdilenGun = DateTime.Now.Date; // Baþlangýçta bugünü saklýyoruz
-        private System.Windows.Forms.Label aktifLabel = null;
+        public async Task GetNamazVakitleri() {
+            string selectedCity = Properties.Settings.Default.SelectedCity ?? "Ýstanbul";
 
-        private async Task GetNamazVakitleri() {
-            string selectedCity = Properties.Settings.Default.SelectedCity;
+            // Namaz vakitlerini almak için NamazVakitleriManager sýnýfýný kullanýyoruz
+            var (Fajr, Dhuhr, Asr, Maghrib, Isha, TomorrowFajr) = await _prayerTimes.GetNamazVakitleri(selectedCity);
 
-            // Þehir seçilmemiþse varsayýlan olarak Ýstanbul kullan
-            if (string.IsNullOrEmpty(selectedCity)) {
-                selectedCity = "Ýstanbul";
-            }
-            using (HttpClient client = new HttpClient()) {
-                string todayDate = DateTime.Now.ToString("dd-MM-yyyy");
-                string tomorrowDate = DateTime.Now.AddDays(1).ToString("dd-MM-yyyy");
+            // Alýnan namaz vakitlerini sýnýf içinde saklýyoruz
+            this._fajr = Fajr;
+            this._dhuhr = Dhuhr;
+            this._asr = Asr;
+            this._maghrib = Maghrib;
+            this._isha = Isha;
+            this._tomorrowFajr = TomorrowFajr;
 
-                string todayUrl = $"http://api.aladhan.com/v1/timingsByCity/{todayDate}?city={selectedCity}&country=Turkey&method=13";
-                string tomorrowUrl = $"http://api.aladhan.com/v1/timingsByCity/{tomorrowDate}?city={selectedCity}&country=Turkey&method=13";
-
-                var todayResponse = await client.GetStringAsync(todayUrl);
-                var tomorrowResponse = await client.GetStringAsync(tomorrowUrl);
-
-                dynamic todayData = JsonConvert.DeserializeObject(todayResponse);
-                dynamic tomorrowData = JsonConvert.DeserializeObject(tomorrowResponse);
-
-                // Bugünün namaz vakitlerini al
-                Fajr = todayData.data.timings.Fajr;
-                Dhuhr = todayData.data.timings.Dhuhr;
-                Asr = todayData.data.timings.Asr;
-                Maghrib = todayData.data.timings.Maghrib;
-                Isha = todayData.data.timings.Isha;
-
-                // Yarýnýn sahur vakti
-                TomorrowFajr = tomorrowData.data.timings.Fajr;
-                // Vakitleri arayüze yazdýr
-                lblTime1.Text = $"Ýmsak: {Fajr}";
-                lblTime2.Text = $"Öðle: {Dhuhr}";
-                lblTime3.Text = $"Ýkindi: {Asr}";
-                lblTime4.Text = $"Akþam: {Maghrib}";
-                lblTime5.Text = $"Yatsý: {Isha}";
-            }
-            GC.Collect();
+            // Vakitleri arayüze yazdýrýyoruz
+            lblTime1.Text = $"Ýmsak: {Fajr}";
+            lblTime2.Text = $"Öðle: {Dhuhr}";
+            lblTime3.Text = $"Ýkindi: {Asr}";
+            lblTime4.Text = $"Akþam: {Maghrib}";
+            lblTime5.Text = $"Yatsý: {Isha}";
         }
 
         private async void timerKalanSure_Tick(object sender, EventArgs e) {
@@ -62,14 +48,14 @@ namespace Ramazan_2025
             DateTime today = simdikiZaman.Date;
 
             // Eðer gün deðiþtiyse, namaz vakitlerini güncelle
-            if (sonKontrolEdilenGun != today) {
+            if (_sonKontrolEdilenGun != today) {
                 await GetNamazVakitleri(); // Yeni namaz vakitlerini çek
-                sonKontrolEdilenGun = today; // Son kontrol edilen günü güncelle
+                _sonKontrolEdilenGun = today; // Son kontrol edilen günü güncelle
             }
 
-            DateTime sahurVakti = DateTime.Parse(Fajr);
-            DateTime iftarVakti = DateTime.Parse(Maghrib);
-            DateTime yarinSahurVakti = DateTime.Parse(TomorrowFajr);
+            DateTime sahurVakti = DateTime.Parse(_fajr);
+            DateTime iftarVakti = DateTime.Parse(_maghrib);
+            DateTime yarinSahurVakti = DateTime.Parse(_tomorrowFajr);
 
             // Bugüne eklenmiþ saatleri oluþtur
             sahurVakti = today.Add(sahurVakti.TimeOfDay);
@@ -96,11 +82,11 @@ namespace Ramazan_2025
                 yeniAktifLabel = lblTime1;
             }
 
-            if (aktifLabel != yeniAktifLabel) {
-                if (aktifLabel != null) aktifLabel.ForeColor = Color.WhiteSmoke;
+            if (_aktifLabel != yeniAktifLabel) {
+                if (_aktifLabel != null) _aktifLabel.ForeColor = Color.WhiteSmoke;
                 if (yeniAktifLabel != null) {
                     yeniAktifLabel.ForeColor = Color.Red;
-                    aktifLabel = yeniAktifLabel;
+                    _aktifLabel = yeniAktifLabel;
                 }
             }
         }
@@ -120,6 +106,14 @@ namespace Ramazan_2025
 
         private void btnSettings_Click(object sender, EventArgs e) {
             FormSettings settingsForm = new FormSettings();
+            settingsForm.CityChanged += async (s, ev) => await GetNamazVakitleri(); // Event'i dinliyoruz
+            // Form1'in konumunu al
+            int form1X = this.Location.X;
+            int form1Y = this.Location.Y;
+
+            // FormSettings'in konumunu ayarla (Form1'in hemen sol üstünde)
+            settingsForm.StartPosition = FormStartPosition.Manual; // Manuel konumlandýrma yapacaðýz
+            settingsForm.Location = new Point(form1X - settingsForm.Width - 2, form1Y); // Sol üst kenara al
             settingsForm.ShowDialog();
         }
         private void btnClose_Click(object sender, EventArgs e) => Application.Exit();

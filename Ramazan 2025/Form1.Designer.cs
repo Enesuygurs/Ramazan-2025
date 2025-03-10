@@ -171,7 +171,7 @@
             Controls.Add(lblTime1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Form1";
-            Opacity = 0.75D;
+            Opacity = 0.9D;
             Text = "Ramazan 2025";
             Load += Form1_Load_1;
             MouseDown += Form1_MouseDown;

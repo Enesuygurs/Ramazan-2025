@@ -52,6 +52,7 @@
             btnClose.Size = new Size(25, 20);
             btnClose.TabIndex = 8;
             btnClose.Text = "r";
+            btnClose.Click += btnClose_Click;
             // 
             // Title
             // 
@@ -90,7 +91,7 @@
             ForeColor = SystemColors.ControlText;
             FormBorderStyle = FormBorderStyle.None;
             Name = "FormSettings";
-            Opacity = 0.75D;
+            Opacity = 0.9D;
             Text = "Settings";
             MouseDown += FormSettings_MouseDown;
             MouseMove += FormSettings_MouseMove;
