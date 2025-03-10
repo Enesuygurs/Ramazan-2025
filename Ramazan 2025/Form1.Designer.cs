@@ -172,6 +172,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "Form1";
             Opacity = 0.9D;
+            ShowInTaskbar = false;
             Text = "Ramazan 2025";
             Load += Form1_Load_1;
             MouseDown += Form1_MouseDown;

@@ -92,6 +92,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "FormSettings";
             Opacity = 0.9D;
+            ShowInTaskbar = false;
             Text = "Settings";
             MouseDown += FormSettings_MouseDown;
             MouseMove += FormSettings_MouseMove;

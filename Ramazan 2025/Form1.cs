@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Windows.Forms;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace Ramazan_2025
 {
@@ -15,6 +16,18 @@ namespace Ramazan_2025
         private DateTime _sonKontrolEdilenGun = DateTime.Now.Date;
         private System.Windows.Forms.Label _aktifLabel = null;
         private PrayerTimes _prayerTimes = new PrayerTimes();
+        #endregion
+
+        #region Components
+        // Pencereyi en alta almak için gerekli olan sabitler
+        private const int HWND_BOTTOM = 1;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         #endregion
 
         public Form1() {
@@ -102,6 +115,7 @@ namespace Ramazan_2025
             //Properties.Settings.Default.Reset();
             //Properties.Settings.Default.Save(); 
             await GetNamazVakitleri();
+            SetWindowPos(this.Handle, (IntPtr)HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
         }
 
         private void btnSettings_Click(object sender, EventArgs e) {
