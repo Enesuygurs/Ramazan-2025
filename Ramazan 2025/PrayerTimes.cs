@@ -9,7 +9,7 @@ namespace Ramazan_2025
 {
     class PrayerTimes
     {
-        public async Task<(string Fajr, string Dhuhr, string Asr, string Maghrib, string Isha, string TomorrowFajr)> GetNamazVakitleri(string selectedCity) {
+        public async Task<(string Fajr, string Dhuhr, string Asr, string Maghrib, string Isha, string TomorrowFajr, string Day)> GetNamazVakitleri(string selectedCity) {
             using (HttpClient client = new HttpClient()) {
                 string todayDate = DateTime.Now.ToString("dd-MM-yyyy");
                 string tomorrowDate = DateTime.Now.AddDays(1).ToString("dd-MM-yyyy");
@@ -29,11 +29,11 @@ namespace Ramazan_2025
                 string Asr = todayData.data.timings.Asr;
                 string Maghrib = todayData.data.timings.Maghrib;
                 string Isha = todayData.data.timings.Isha;
+                string Day = todayData.data.date.hijri.day;
 
                 // Yarının sahur vakti
                 string TomorrowFajr = tomorrowData.data.timings.Fajr;
-
-                return (Fajr, Dhuhr, Asr, Maghrib, Isha, TomorrowFajr);
+                return (Fajr, Dhuhr, Asr, Maghrib, Isha, TomorrowFajr, Day);
             }
         }
     }

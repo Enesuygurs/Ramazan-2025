@@ -27,6 +27,7 @@
             btnClose = new Label();
             Title = new Label();
             cbChangeCity = new ComboBox();
+            cbRunStartup = new CheckBox();
             SuspendLayout();
             // 
             // cbEnableReminder
@@ -72,11 +73,24 @@
             cbChangeCity.FlatStyle = FlatStyle.Flat;
             cbChangeCity.FormattingEnabled = true;
             cbChangeCity.Items.AddRange(new object[] { "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Aksaray", "Amasya", "Ankara", "Antalya", "Ardahan", "Artvin", "Aydın", "Balıkesir", "Bartın", "Batman", "Bayburt", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Düzce", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkâri", "Hatay", "Iğdır", "Isparta", "İstanbul", "İzmir", "Kahramanmaraş", "Karabük", "Karaman", "Kars", "Kastamonu", "Kayseri", "Kilis", "Kırıkkale", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Mardin", "Mersin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Osmaniye", "Rize", "Sakarya", "Samsun", "Şanlıurfa", "Siirt", "Sinop", "Sivas", "Şırnak", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Uşak", "Van", "Yalova", "Yozgat", "Zonguldak" });
-            cbChangeCity.Location = new Point(48, 114);
+            cbChangeCity.Location = new Point(48, 133);
             cbChangeCity.Name = "cbChangeCity";
             cbChangeCity.Size = new Size(121, 23);
             cbChangeCity.TabIndex = 9;
             cbChangeCity.SelectedIndexChanged += cbChangeCity_SelectedIndexChanged;
+            // 
+            // cbRunStartup
+            // 
+            cbRunStartup.AutoSize = true;
+            cbRunStartup.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            cbRunStartup.ForeColor = Color.WhiteSmoke;
+            cbRunStartup.Location = new Point(24, 70);
+            cbRunStartup.Name = "cbRunStartup";
+            cbRunStartup.Size = new Size(88, 17);
+            cbRunStartup.TabIndex = 10;
+            cbRunStartup.Text = "Run Startup";
+            cbRunStartup.UseVisualStyleBackColor = true;
+            cbRunStartup.CheckedChanged += cbRunStartup_CheckedChanged;
             // 
             // FormSettings
             // 
@@ -84,6 +98,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(220, 180);
+            Controls.Add(cbRunStartup);
             Controls.Add(cbChangeCity);
             Controls.Add(btnClose);
             Controls.Add(Title);
@@ -106,5 +121,6 @@
         private Label btnClose;
         private Label Title;
         private ComboBox cbChangeCity;
+        private CheckBox cbRunStartup;
     }
 }

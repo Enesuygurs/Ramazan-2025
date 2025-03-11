@@ -41,7 +41,7 @@ namespace Ramazan_2025
             string selectedCity = Properties.Settings.Default.SelectedCity ?? "Ýstanbul";
 
             // Namaz vakitlerini almak için NamazVakitleriManager sýnýfýný kullanýyoruz
-            var (Fajr, Dhuhr, Asr, Maghrib, Isha, TomorrowFajr) = await _prayerTimes.GetNamazVakitleri(selectedCity);
+            var (Fajr, Dhuhr, Asr, Maghrib, Isha, TomorrowFajr, Day) = await _prayerTimes.GetNamazVakitleri(selectedCity);
 
             // Alýnan namaz vakitlerini sýnýf içinde saklýyoruz
             this._fajr = Fajr;
@@ -57,6 +57,7 @@ namespace Ramazan_2025
             lblTime3.Text = $"Ýkindi: {Asr}";
             lblTime4.Text = $"Akþam: {Maghrib}";
             lblTime5.Text = $"Yatsý: {Isha}";
+            lblRamadanDay.Text = $"{Day}. Gün";
         }
 
         private async void timerKalanSure_Tick(object sender, EventArgs e) {
@@ -121,12 +122,27 @@ namespace Ramazan_2025
         private void btnSettings_Click(object sender, EventArgs e) {
             FormSettings settingsForm = new FormSettings();
             settingsForm.CityChanged += async (s, ev) => await GetNamazVakitleri(); // Event'i dinliyoruz
+
             // Form1'in konumunu al
             int form1X = this.Location.X;
             int form1Y = this.Location.Y;
-            // FormSettings'in konumunu ayarla (Form1'in hemen sol üstünde)
-            settingsForm.StartPosition = FormStartPosition.Manual; // Manuel konumlandýrma yapacaðýz
-            settingsForm.Location = new Point(form1X - settingsForm.Width - 2, form1Y); // Sol üst kenara al
+
+            // Ekran geniþliðini al
+            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+
+            // FormSettings'in geniþliðini al
+            int settingsWidth = settingsForm.Width;
+
+            // FormSettings'in konumunu ayarla
+            settingsForm.StartPosition = FormStartPosition.Manual;
+
+            if (form1X - settingsWidth - 2 >= 0) // Sol kenarda yeterince yer var mý?
+            {
+                settingsForm.Location = new Point(form1X - settingsWidth - 2, form1Y); // Sol üst kenara al
+            } else {
+                settingsForm.Location = new Point(form1X + this.Width + 2, form1Y); // Sað tarafa al
+            }
+
             settingsForm.ShowDialog();
         }
 
@@ -141,13 +157,8 @@ namespace Ramazan_2025
 
         #region Change Widget Size
         private void lblChangeSize_Click(object sender, EventArgs e) {
-            if (this.Size == new System.Drawing.Size(220, 270)) {
-                // Eðer boyut 220x270 ise, 220x100 yap
-                this.Size = new System.Drawing.Size(220, 100);
-            } else if (this.Size == new System.Drawing.Size(220, 100)) {
-                // Eðer boyut 220x100 ise, 220x270 yap
-                this.Size = new System.Drawing.Size(220, 270);
-            }
+            if (this.Size == new System.Drawing.Size(220, 300))  this.Size = new System.Drawing.Size(220, 130);
+            else if (this.Size == new System.Drawing.Size(220, 130))  this.Size = new System.Drawing.Size(220, 300);
         }
         #endregion
 
