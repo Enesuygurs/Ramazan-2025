@@ -7,8 +7,6 @@ namespace Ramazan_2025
 
         public FormSettings() {
             InitializeComponent();
-            cbEnableReminder.Checked = Properties.Settings.Default.reminder;
-            cbChangeCity.SelectedItem = Properties.Settings.Default.SelectedCity ?? "İstanbul";
         }
 
         #region Settings Controls
@@ -46,6 +44,11 @@ namespace Ramazan_2025
             CityChanged?.Invoke(this, EventArgs.Empty);
         }
         #endregion
+
+        private void FormSettings_Load(object sender, EventArgs e) {
+            cbEnableReminder.Checked = Properties.Settings.Default.reminder;
+            cbChangeCity.SelectedItem = Properties.Settings.Default.SelectedCity ?? "İstanbul";
+        }
 
         private void btnClose_Click(object sender, EventArgs e) => this.Close();
 

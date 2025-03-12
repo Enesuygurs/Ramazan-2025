@@ -37,7 +37,7 @@
             btnClose = new Label();
             btnSettings = new Label();
             lblKalanZaman = new Label();
-            timerKalanSure = new System.Windows.Forms.Timer(components);
+            timerRemainingTime = new System.Windows.Forms.Timer(components);
             reminderNotification = new NotifyIcon(components);
             lblChangeSize = new Label();
             lblRamadanDay = new Label();
@@ -145,10 +145,10 @@
             lblKalanZaman.Text = "Kalan Süre\r\n08:02:25";
             lblKalanZaman.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // timerKalanSure
+            // timerRemainingTime
             // 
-            timerKalanSure.Interval = 1000;
-            timerKalanSure.Tick += timerKalanSure_Tick;
+            timerRemainingTime.Interval = 1000;
+            timerRemainingTime.Tick += timerKalanSure_Tick;
             // 
             // reminderNotification
             // 
@@ -218,7 +218,7 @@
         private Label btnClose;
         private Label btnSettings;
         private Label lblKalanZaman;
-        private System.Windows.Forms.Timer timerKalanSure;
+        private System.Windows.Forms.Timer timerRemainingTime;
         private NotifyIcon reminderNotification;
         private Label lblChangeSize;
         private Label lblRamadanDay;

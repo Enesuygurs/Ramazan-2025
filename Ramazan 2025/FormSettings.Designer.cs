@@ -110,6 +110,7 @@
             Opacity = 0.82D;
             ShowInTaskbar = false;
             Text = "Settings";
+            Load += FormSettings_Load;
             MouseDown += FormSettings_MouseDown;
             MouseMove += FormSettings_MouseMove;
             ResumeLayout(false);
