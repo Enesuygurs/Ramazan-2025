@@ -29,7 +29,13 @@
 
 ## 🖥️ Screenshots
 
-_(Add screenshots of your app here)_
+# Main Form (Big Size)
+![image](https://github.com/user-attachments/assets/b5d4ec7f-8900-46b3-9766-e7c3c530e73e)
+# Main Form (Small Size)
+![image](https://github.com/user-attachments/assets/e2accd78-7907-40a4-9258-60a5d2ce0955)
+# Settings Form
+![image](https://github.com/user-attachments/assets/9d7cc53f-5282-4570-a1cd-bd7dce5e709f)
+
 
 ## 🛠️ Technologies Used
 
