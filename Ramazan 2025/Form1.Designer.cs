@@ -147,7 +147,6 @@
             // 
             // timerKalanSure
             // 
-            timerKalanSure.Enabled = true;
             timerKalanSure.Interval = 1000;
             timerKalanSure.Tick += timerKalanSure_Tick;
             // 

@@ -1,7 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Ramazan_2025
-{
+namespace Ramazan_2025 {
     public partial class Form1 : Form {
 
         #region Fields
@@ -33,77 +32,100 @@ namespace Ramazan_2025
         private async void Form1_Load_1(object sender, EventArgs e) {
             //Properties.Settings.Default.Reset();
             //Properties.Settings.Default.Save(); 
-            await GetNamazVakitleri();
+            await GetPrayerTimes();
         }
 
         #region Ramadan Timetable Operations 
-        public async Task GetNamazVakitleri() {
-            string selectedCity = Properties.Settings.Default.SelectedCity ?? "Ýstanbul";
+        public async Task GetPrayerTimes() {
+            try {
+                string selectedCity = Properties.Settings.Default.SelectedCity ?? "Ýstanbul";
+                var result = await _prayerTimes.GetPrayerTimes(selectedCity);
 
-            // Namaz vakitlerini almak için NamazVakitleriManager sýnýfýný kullanýyoruz
-            var (Fajr, Dhuhr, Asr, Maghrib, Isha, TomorrowFajr, Day) = await _prayerTimes.GetNamazVakitleri(selectedCity);
+                if (new[] { result.Fajr, result.Dhuhr, result.Asr, result.Maghrib, result.Isha, result.TomorrowFajr }.Any(string.IsNullOrEmpty)) {
+                    MessageBox.Show("Namaz vakitleri eksik veya hatalý geldi!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
-            // Alýnan namaz vakitlerini sýnýf içinde saklýyoruz
-            this._fajr = Fajr;
-            this._dhuhr = Dhuhr;
-            this._asr = Asr;
-            this._maghrib = Maghrib;
-            this._isha = Isha;
-            this._tomorrowFajr = TomorrowFajr;
+                // Baþarýyla çekilen veriyi atama
+                _fajr = result.Fajr;
+                _dhuhr = result.Dhuhr;
+                _asr = result.Asr;
+                _maghrib = result.Maghrib;
+                _isha = result.Isha;
+                _tomorrowFajr = result.TomorrowFajr;
 
-            // Vakitleri arayüze yazdýrýyoruz
-            lblTime1.Text = $"Ýmsak: {Fajr}";
-            lblTime2.Text = $"Öðle: {Dhuhr}";
-            lblTime3.Text = $"Ýkindi: {Asr}";
-            lblTime4.Text = $"Akþam: {Maghrib}";
-            lblTime5.Text = $"Yatsý: {Isha}";
-            lblRamadanDay.Text = $"{Day}. Gün";
+                // Arayüzü güncelleme
+                lblTime1.Text = $"Ýmsak: {_fajr}";
+                lblTime2.Text = $"Öðle: {_dhuhr}";
+                lblTime3.Text = $"Ýkindi: {_asr}";
+                lblTime4.Text = $"Akþam: {_maghrib}";
+                lblTime5.Text = $"Yatsý: {_isha}";
+                lblRamadanDay.Text = $"{result.Day}. Gün";
+
+                if (!timerKalanSure.Enabled) timerKalanSure.Enabled = true;
+            } catch (Exception ex) {
+                MessageBox.Show($"Namaz vakitleri alýnýrken bir hata oluþtu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private async void timerKalanSure_Tick(object sender, EventArgs e) {
-            DateTime simdikiZaman = DateTime.Now;
-            DateTime today = simdikiZaman.Date;
+            try {
+                DateTime simdikiZaman = DateTime.Now;
+                DateTime today = simdikiZaman.Date;
 
-            // Eðer gün deðiþtiyse, namaz vakitlerini güncelle
-            if (_sonKontrolEdilenGun != today) {
-                await GetNamazVakitleri(); // Yeni namaz vakitlerini çek
-                _sonKontrolEdilenGun = today; // Son kontrol edilen günü güncelle
-            }
-
-            DateTime sahurVakti = DateTime.Parse(_fajr);
-            DateTime iftarVakti = DateTime.Parse(_maghrib);
-            DateTime yarinSahurVakti = DateTime.Parse(_tomorrowFajr);
-
-            // Bugüne eklenmiþ saatleri oluþtur
-            sahurVakti = today.Add(sahurVakti.TimeOfDay);
-            iftarVakti = today.Add(iftarVakti.TimeOfDay);
-            yarinSahurVakti = today.AddDays(1).Add(yarinSahurVakti.TimeOfDay);
-            System.Windows.Forms.Label yeniAktifLabel = null;
-
-            if (simdikiZaman < sahurVakti) {
-                TimeSpan kalanSure = sahurVakti - simdikiZaman;
-                lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
-                yeniAktifLabel = lblTime1;
-                // **Bildirim Ayarý Aktifse ve 15 dakika kaldýysa bildirim göster
-                if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Sahur Vakti Yaklaþýyor!", "Sahura 15 dakika kaldý.");
-            } else if (simdikiZaman > sahurVakti && simdikiZaman < iftarVakti) {
-                TimeSpan kalanSure = iftarVakti - simdikiZaman;
-                lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
-                yeniAktifLabel = lblTime4;
-                // **Bildirim Ayarý Aktifse ve 15 dakika kaldýysa bildirim göster
-                if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Ýftar Vakti Yaklaþýyor!", "Ýftara 15 dakika kaldý.");
-            } else {
-                TimeSpan kalanSure = yarinSahurVakti - simdikiZaman;
-                lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
-                yeniAktifLabel = lblTime1;
-            }
-
-            if (_aktifLabel != yeniAktifLabel) {
-                if (_aktifLabel != null) _aktifLabel.ForeColor = Color.WhiteSmoke;
-                if (yeniAktifLabel != null) {
-                    yeniAktifLabel.ForeColor = Color.Red;
-                    _aktifLabel = yeniAktifLabel;
+                // Eðer gün deðiþtiyse, namaz vakitlerini güncelle
+                if (_sonKontrolEdilenGun != today) {
+                    await GetPrayerTimes(); // Yeni namaz vakitlerini çek
+                    _sonKontrolEdilenGun = today; // Son kontrol edilen günü güncelle
                 }
+
+                DateTime sahurVakti, iftarVakti, yarinSahurVakti;
+                System.Windows.Forms.Label yeniAktifLabel = null;
+
+                try {
+                    // Null kontrolü ekleyerek hatalarý önlüyoruz
+                    if (string.IsNullOrEmpty(_fajr) || string.IsNullOrEmpty(_maghrib) || string.IsNullOrEmpty(_tomorrowFajr)) {
+                        MessageBox.Show("Namaz vakitleri yüklenemedi. Lütfen internet baðlantýnýzý kontrol edin.");
+                    }
+
+                    sahurVakti = DateTime.Parse(_fajr);
+                    iftarVakti = DateTime.Parse(_maghrib);
+                    yarinSahurVakti = DateTime.Parse(_tomorrowFajr);
+
+                    // Bugüne eklenmiþ saatleri oluþtur
+                    sahurVakti = today.Add(sahurVakti.TimeOfDay);
+                    iftarVakti = today.Add(iftarVakti.TimeOfDay);
+                    yarinSahurVakti = today.AddDays(1).Add(yarinSahurVakti.TimeOfDay);
+                } catch (Exception ex) {
+                    MessageBox.Show($"Namaz vakitleri alýnýrken hata oluþtu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return; // Hata olursa iþlemi devam ettirme
+                }
+
+                if (simdikiZaman < sahurVakti) {
+                    TimeSpan kalanSure = sahurVakti - simdikiZaman;
+                    lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
+                    yeniAktifLabel = lblTime1;
+                    if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Sahur Vakti Yaklaþýyor!", "Sahura 15 dakika kaldý.");
+                } else if (simdikiZaman > sahurVakti && simdikiZaman < iftarVakti) {
+                    TimeSpan kalanSure = iftarVakti - simdikiZaman;
+                    lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
+                    yeniAktifLabel = lblTime4;
+                    if (Properties.Settings.Default.reminder && kalanSure.Hours == 0 && kalanSure.Minutes == 15 && kalanSure.Seconds == 0) ShowNotification("Ýftar Vakti Yaklaþýyor!", "Ýftara 15 dakika kaldý.");
+                } else {
+                    TimeSpan kalanSure = yarinSahurVakti - simdikiZaman;
+                    lblKalanZaman.Text = $"Kalan Süre\n{kalanSure.Hours:D2}:{kalanSure.Minutes:D2}:{kalanSure.Seconds:D2}";
+                    yeniAktifLabel = lblTime1;
+                }
+
+                if (_aktifLabel != yeniAktifLabel) {
+                    if (_aktifLabel != null) _aktifLabel.ForeColor = Color.WhiteSmoke;
+                    if (yeniAktifLabel != null) {
+                        yeniAktifLabel.ForeColor = Color.Red;
+                        _aktifLabel = yeniAktifLabel;
+                    }
+                }
+            } catch (Exception ex) {
+                MessageBox.Show($"Bir hata oluþtu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         #endregion
@@ -121,7 +143,7 @@ namespace Ramazan_2025
         #region Buttons
         private void btnSettings_Click(object sender, EventArgs e) {
             FormSettings settingsForm = new FormSettings();
-            settingsForm.CityChanged += async (s, ev) => await GetNamazVakitleri(); // Event'i dinliyoruz
+            settingsForm.CityChanged += async (s, ev) => await GetPrayerTimes(); // Event'i dinliyoruz
 
             // Form1'in konumunu al
             int form1X = this.Location.X;
@@ -157,8 +179,8 @@ namespace Ramazan_2025
 
         #region Change Widget Size
         private void lblChangeSize_Click(object sender, EventArgs e) {
-            if (this.Size == new System.Drawing.Size(220, 300))  this.Size = new System.Drawing.Size(220, 130);
-            else if (this.Size == new System.Drawing.Size(220, 130))  this.Size = new System.Drawing.Size(220, 300);
+            if (this.Size == new System.Drawing.Size(220, 300)) this.Size = new System.Drawing.Size(220, 130);
+            else if (this.Size == new System.Drawing.Size(220, 130)) this.Size = new System.Drawing.Size(220, 300);
         }
         #endregion
 
