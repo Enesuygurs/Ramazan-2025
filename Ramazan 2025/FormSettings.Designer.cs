@@ -23,11 +23,12 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSettings));
             cbEnableReminder = new CheckBox();
             btnClose = new Label();
             Title = new Label();
             cbChangeCity = new ComboBox();
-            cbRunStartup = new CheckBox();
+            cbRunOnStartup = new CheckBox();
             SuspendLayout();
             // 
             // cbEnableReminder
@@ -80,18 +81,18 @@
             cbChangeCity.TabIndex = 9;
             cbChangeCity.SelectedIndexChanged += cbChangeCity_SelectedIndexChanged;
             // 
-            // cbRunStartup
+            // cbRunOnStartup
             // 
-            cbRunStartup.AutoSize = true;
-            cbRunStartup.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            cbRunStartup.ForeColor = Color.WhiteSmoke;
-            cbRunStartup.Location = new Point(24, 70);
-            cbRunStartup.Name = "cbRunStartup";
-            cbRunStartup.Size = new Size(88, 17);
-            cbRunStartup.TabIndex = 10;
-            cbRunStartup.Text = "Run Startup";
-            cbRunStartup.UseVisualStyleBackColor = true;
-            cbRunStartup.CheckedChanged += cbRunStartup_CheckedChanged;
+            cbRunOnStartup.AutoSize = true;
+            cbRunOnStartup.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            cbRunOnStartup.ForeColor = Color.WhiteSmoke;
+            cbRunOnStartup.Location = new Point(24, 70);
+            cbRunOnStartup.Name = "cbRunOnStartup";
+            cbRunOnStartup.Size = new Size(105, 17);
+            cbRunOnStartup.TabIndex = 10;
+            cbRunOnStartup.Text = "Run on Startup";
+            cbRunOnStartup.UseVisualStyleBackColor = true;
+            cbRunOnStartup.CheckedChanged += cbRunStartup_CheckedChanged;
             // 
             // FormSettings
             // 
@@ -99,15 +100,16 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(220, 180);
-            Controls.Add(cbRunStartup);
+            Controls.Add(cbRunOnStartup);
             Controls.Add(cbChangeCity);
             Controls.Add(btnClose);
             Controls.Add(Title);
             Controls.Add(cbEnableReminder);
             ForeColor = SystemColors.ControlText;
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "FormSettings";
-            Opacity = 0.82D;
+            Opacity = 0.8D;
             ShowInTaskbar = false;
             Text = "Settings";
             Load += FormSettings_Load;
@@ -123,6 +125,6 @@
         private Label btnClose;
         private Label Title;
         private ComboBox cbChangeCity;
-        private CheckBox cbRunStartup;
+        private CheckBox cbRunOnStartup;
     }
 }

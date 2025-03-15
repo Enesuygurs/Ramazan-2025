@@ -4,9 +4,15 @@ namespace Ramazan_2025
 {
     public partial class FormSettings : Form {
         public event EventHandler CityChanged;
+        private bool _isInitializing = false;
 
         public FormSettings() {
             InitializeComponent();
+        }
+        private void FormSettings_Load(object sender, EventArgs e) {
+            cbEnableReminder.Checked = Properties.Settings.Default.reminder;
+            cbChangeCity.SelectedItem = Properties.Settings.Default.SelectedCity ?? "İstanbul";
+            _isInitializing = true; // 🔥 Event'leri tekrar aktif et
         }
 
         #region Settings Controls
@@ -26,7 +32,7 @@ namespace Ramazan_2025
                         return;
                     }
 
-                    if (cbRunStartup.Checked) {
+                    if (cbRunOnStartup.Checked) {
                         regKey.SetValue(appName, exePath); // Başlangıçta aç
                     } else {
                         if (regKey.GetValue(appName) != null) regKey.DeleteValue(appName, false); // Başlangıçtan kaldır
@@ -37,18 +43,22 @@ namespace Ramazan_2025
             }
         }
 
+        private async Task ChangeCityAsync() {
+            try {
+                string selectedCity = cbChangeCity.SelectedItem.ToString();
+                Properties.Settings.Default.SelectedCity = selectedCity; // Şehri kaydediyoruz
+                Properties.Settings.Default.Save(); // Değişiklikleri kaydediyoruz
+                CityChanged?.Invoke(this, EventArgs.Empty);
+            } catch (Exception ex) {
+                MessageBox.Show($"Şehir değiştirilirken bir hata oluştu: {ex.Message}", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private async void cbChangeCity_SelectedIndexChanged(object sender, EventArgs e) {
-            string selectedCity = cbChangeCity.SelectedItem.ToString();
-            Properties.Settings.Default.SelectedCity = selectedCity; // Şehri kaydediyoruz
-            Properties.Settings.Default.Save(); // Değişiklikleri kaydediyoruz
-            CityChanged?.Invoke(this, EventArgs.Empty);
+            if (!_isInitializing) return;
+            await ChangeCityAsync();
         }
         #endregion
-
-        private void FormSettings_Load(object sender, EventArgs e) {
-            cbEnableReminder.Checked = Properties.Settings.Default.reminder;
-            cbChangeCity.SelectedItem = Properties.Settings.Default.SelectedCity ?? "İstanbul";
-        }
 
         private void btnClose_Click(object sender, EventArgs e) => this.Close();
 

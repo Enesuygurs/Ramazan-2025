@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent() {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             lblTime1 = new Label();
             lblTime2 = new Label();
             lblTime3 = new Label();
@@ -39,8 +40,12 @@
             lblKalanZaman = new Label();
             timerRemainingTime = new System.Windows.Forms.Timer(components);
             reminderNotification = new NotifyIcon(components);
+            taskbarMenu = new ContextMenuStrip(components);
+            exitToolStripMenuItem = new ToolStripMenuItem();
             lblChangeSize = new Label();
             lblRamadanDay = new Label();
+            lblCity = new Label();
+            taskbarMenu.SuspendLayout();
             SuspendLayout();
             // 
             // lblTime1
@@ -48,7 +53,7 @@
             lblTime1.AutoSize = true;
             lblTime1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime1.ForeColor = Color.WhiteSmoke;
-            lblTime1.Location = new Point(29, 132);
+            lblTime1.Location = new Point(29, 148);
             lblTime1.Name = "lblTime1";
             lblTime1.Size = new Size(61, 21);
             lblTime1.TabIndex = 0;
@@ -59,7 +64,7 @@
             lblTime2.AutoSize = true;
             lblTime2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime2.ForeColor = Color.WhiteSmoke;
-            lblTime2.Location = new Point(29, 162);
+            lblTime2.Location = new Point(29, 178);
             lblTime2.Name = "lblTime2";
             lblTime2.Size = new Size(63, 21);
             lblTime2.TabIndex = 1;
@@ -70,7 +75,7 @@
             lblTime3.AutoSize = true;
             lblTime3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime3.ForeColor = Color.WhiteSmoke;
-            lblTime3.Location = new Point(29, 192);
+            lblTime3.Location = new Point(29, 208);
             lblTime3.Name = "lblTime3";
             lblTime3.Size = new Size(53, 21);
             lblTime3.TabIndex = 2;
@@ -81,7 +86,7 @@
             lblTime4.AutoSize = true;
             lblTime4.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime4.ForeColor = Color.WhiteSmoke;
-            lblTime4.Location = new Point(29, 222);
+            lblTime4.Location = new Point(29, 238);
             lblTime4.Name = "lblTime4";
             lblTime4.Size = new Size(58, 21);
             lblTime4.TabIndex = 3;
@@ -92,7 +97,7 @@
             lblTime5.AutoSize = true;
             lblTime5.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime5.ForeColor = Color.WhiteSmoke;
-            lblTime5.Location = new Point(29, 252);
+            lblTime5.Location = new Point(29, 268);
             lblTime5.Name = "lblTime5";
             lblTime5.Size = new Size(51, 21);
             lblTime5.TabIndex = 4;
@@ -138,7 +143,7 @@
             // 
             lblKalanZaman.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblKalanZaman.ForeColor = Color.WhiteSmoke;
-            lblKalanZaman.Location = new Point(50, 73);
+            lblKalanZaman.Location = new Point(50, 85);
             lblKalanZaman.Name = "lblKalanZaman";
             lblKalanZaman.Size = new Size(120, 42);
             lblKalanZaman.TabIndex = 8;
@@ -148,12 +153,28 @@
             // timerRemainingTime
             // 
             timerRemainingTime.Interval = 1000;
-            timerRemainingTime.Tick += timerKalanSure_Tick;
+            timerRemainingTime.Tick += timerRemainingTime_Tick;
             // 
             // reminderNotification
             // 
+            reminderNotification.ContextMenuStrip = taskbarMenu;
+            reminderNotification.Icon = (Icon)resources.GetObject("reminderNotification.Icon");
             reminderNotification.Text = "Ramazan 2025";
             reminderNotification.Visible = true;
+            // 
+            // taskbarMenu
+            // 
+            taskbarMenu.Items.AddRange(new ToolStripItem[] { exitToolStripMenuItem });
+            taskbarMenu.Name = "taskbarMenu";
+            taskbarMenu.Size = new Size(100, 26);
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(99, 22);
+            exitToolStripMenuItem.Text = "Çıkış";
+            exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // lblChangeSize
             // 
@@ -171,19 +192,31 @@
             // 
             lblRamadanDay.Font = new Font("Segoe UI Semibold", 18F, FontStyle.Bold);
             lblRamadanDay.ForeColor = Color.WhiteSmoke;
-            lblRamadanDay.Location = new Point(50, 36);
+            lblRamadanDay.Location = new Point(50, 30);
             lblRamadanDay.Name = "lblRamadanDay";
             lblRamadanDay.Size = new Size(120, 32);
             lblRamadanDay.TabIndex = 10;
             lblRamadanDay.Text = "24. Gün";
             lblRamadanDay.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // lblCity
+            // 
+            lblCity.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            lblCity.ForeColor = Color.OrangeRed;
+            lblCity.Location = new Point(50, 62);
+            lblCity.Name = "lblCity";
+            lblCity.Size = new Size(120, 22);
+            lblCity.TabIndex = 11;
+            lblCity.Text = "İstanbul";
+            lblCity.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
-            ClientSize = new Size(220, 300);
+            ClientSize = new Size(220, 310);
+            Controls.Add(lblCity);
             Controls.Add(lblRamadanDay);
             Controls.Add(lblChangeSize);
             Controls.Add(lblKalanZaman);
@@ -196,13 +229,15 @@
             Controls.Add(lblTime2);
             Controls.Add(lblTime1);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
-            Opacity = 0.82D;
+            Opacity = 0.8D;
             ShowInTaskbar = false;
             Text = "Ramazan 2025";
             Load += Form1_Load_1;
             MouseDown += Form1_MouseDown;
             MouseMove += Form1_MouseMove;
+            taskbarMenu.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -222,5 +257,9 @@
         private NotifyIcon reminderNotification;
         private Label lblChangeSize;
         private Label lblRamadanDay;
+        private PictureBox pictureBox1;
+        private ContextMenuStrip taskbarMenu;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private Label lblCity;
     }
 }

@@ -9,10 +9,11 @@ namespace Ramazan_2025 {
         private DateTime _lastCheckedDay = DateTime.Now.Date;
         private PrayerTimes _prayerTimes = new PrayerTimes();
         private Label _activeLabel = null;
+        private FormSettings _settingsForm;
         #endregion
 
         #region Components
-        // Pencereyi en alta almak için gerekli olan sabitler
+        // Pencereyi en alta almak için
         private const int HWND_BOTTOM = 1;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOMOVE = 0x0002;
@@ -35,20 +36,15 @@ namespace Ramazan_2025 {
         public async Task GetPrayerTimes() {
             try {
                 string selectedCity = Properties.Settings.Default.SelectedCity ?? "İstanbul";
-                var result = await _prayerTimes.GetPrayerTimes(selectedCity);
+                lblCity.Text = selectedCity;
 
+                var result = await _prayerTimes.GetPrayerTimesAsync(selectedCity);
                 if (new[] { result.Fajr, result.Dhuhr, result.Asr, result.Maghrib, result.Isha, result.TomorrowFajr }.Any(string.IsNullOrEmpty)) {
                     MessageBox.Show("Prayer times are missing or incorrect!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Başarıyla çekilen veriyi atama
-                _fajr = result.Fajr;
-                _dhuhr = result.Dhuhr;
-                _asr = result.Asr;
-                _maghrib = result.Maghrib;
-                _isha = result.Isha;
-                _tomorrowFajr = result.TomorrowFajr;
+                (_fajr, _dhuhr, _asr, _maghrib, _isha, _tomorrowFajr) = (result.Fajr, result.Dhuhr, result.Asr, result.Maghrib, result.Isha, result.TomorrowFajr);
 
                 // Arayüzü güncelleme
                 lblTime1.Text = $"İmsak: {_fajr}";
@@ -56,7 +52,7 @@ namespace Ramazan_2025 {
                 lblTime3.Text = $"İkindi: {_asr}";
                 lblTime4.Text = $"Akşam: {_maghrib}";
                 lblTime5.Text = $"Yatsı: {_isha}";
-                lblRamadanDay.Text = $"{result.Day}. Gün";
+                lblRamadanDay.Text = $"{result.HijriDay}. Gün";
 
                 if (!timerRemainingTime.Enabled) timerRemainingTime.Enabled = true;
             } catch (Exception ex) {
@@ -64,57 +60,48 @@ namespace Ramazan_2025 {
             }
         }
 
-        private async void timerremainingTime_Tick(object sender, EventArgs e) {
+        private async void timerRemainingTime_Tick(object sender, EventArgs e) {
             try {
                 DateTime currentTime = DateTime.Now;
                 DateTime today = currentTime.Date;
 
                 // Eğer gün değiştiyse, namaz vakitlerini güncelle
                 if (_lastCheckedDay != today) {
-                    await GetPrayerTimes(); // Yeni namaz vakitlerini çek
-                    _lastCheckedDay = today; // Son kontrol edilen günü güncelle
+                    await GetPrayerTimes();
+                    _lastCheckedDay = today;
                 }
+                if (string.IsNullOrWhiteSpace(_fajr) || string.IsNullOrWhiteSpace(_maghrib) || string.IsNullOrWhiteSpace(_tomorrowFajr)) return;
 
-                DateTime suhoorTime, iftarVakti, tomorrowSuhoorTime;
+                // Tarihleri oluştur
+                DateTime suhoorTime = today.Add(DateTime.Parse(_fajr).TimeOfDay);
+                DateTime iftarTime = today.Add(DateTime.Parse(_maghrib).TimeOfDay);
+                DateTime tomorrowSuhoorTime = today.AddDays(1).Add(DateTime.Parse(_tomorrowFajr).TimeOfDay);
+
+                // Hangi Label aktif olacak?
                 Label activeLabelNew = null;
-
-                try {
-                    // Null kontrolü ekleyerek hataları önlüyoruz
-                    if (string.IsNullOrEmpty(_fajr) || string.IsNullOrEmpty(_maghrib) || string.IsNullOrEmpty(_tomorrowFajr)) {
-                        MessageBox.Show("Namaz vakitleri yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
-                    }
-
-                    suhoorTime = DateTime.Parse(_fajr);
-                    iftarVakti = DateTime.Parse(_maghrib);
-                    tomorrowSuhoorTime = DateTime.Parse(_tomorrowFajr);
-
-                    // Bugüne eklenmiş saatleri oluştur
-                    suhoorTime = today.Add(suhoorTime.TimeOfDay);
-                    iftarVakti = today.Add(iftarVakti.TimeOfDay);
-                    tomorrowSuhoorTime = today.AddDays(1).Add(tomorrowSuhoorTime.TimeOfDay);
-                } catch (Exception ex) {
-                    MessageBox.Show($"An error occurred while fetching prayer times: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return; // Hata olursa işlemi devam ettirme
-                }
+                TimeSpan remainingTime;
 
                 if (currentTime < suhoorTime) {
-                    TimeSpan remainingTime = suhoorTime - currentTime;
-                    lblKalanZaman.Text = $"Kalan Süre\n{remainingTime.Hours:D2}:{remainingTime.Minutes:D2}:{remainingTime.Seconds:D2}";
+                    remainingTime = suhoorTime - currentTime;
                     activeLabelNew = lblTime1;
-                    if (Properties.Settings.Default.reminder && remainingTime.Hours == 0 && remainingTime.Minutes == 15 && remainingTime.Seconds == 0) ShowNotification("Sahur Vakti Yaklaşıyor!", "Sahura 15 dakika kaldı.");
-                } else if (currentTime > suhoorTime && currentTime < iftarVakti) {
-                    TimeSpan remainingTime = iftarVakti - currentTime;
-                    lblKalanZaman.Text = $"Kalan Süre\n{remainingTime.Hours:D2}:{remainingTime.Minutes:D2}:{remainingTime.Seconds:D2}";
+                    CheckReminder(remainingTime, "Sahur Vakti Yaklaşıyor!", "Sahura 15 dakika kaldı.");
+                } else if (currentTime < iftarTime) {
+                    remainingTime = iftarTime - currentTime;
                     activeLabelNew = lblTime4;
-                    if (Properties.Settings.Default.reminder && remainingTime.Hours == 0 && remainingTime.Minutes == 15 && remainingTime.Seconds == 0) ShowNotification("İftar Vakti Yaklaşıyor!", "İftara 15 dakika kaldı.");
+                    CheckReminder(remainingTime, "İftar Vakti Yaklaşıyor!", "İftara 15 dakika kaldı.");
                 } else {
-                    TimeSpan remainingTime = tomorrowSuhoorTime - currentTime;
-                    lblKalanZaman.Text = $"Kalan Süre\n{remainingTime.Hours:D2}:{remainingTime.Minutes:D2}:{remainingTime.Seconds:D2}";
+                    remainingTime = tomorrowSuhoorTime - currentTime;
                     activeLabelNew = lblTime1;
                 }
 
+                lblKalanZaman.Text = $"Kalan Süre\n{remainingTime.Hours:D2}:{remainingTime.Minutes:D2}:{remainingTime.Seconds:D2}";
+
+                // Label renk değişimi yönetimi
                 if (_activeLabel != activeLabelNew) {
-                    if (_activeLabel != null) _activeLabel.ForeColor = Color.WhiteSmoke;
+                    if (_activeLabel != null) {
+                        _activeLabel.ForeColor = Color.WhiteSmoke;
+                    }
+
                     if (activeLabelNew != null) {
                         activeLabelNew.ForeColor = Color.Red;
                         _activeLabel = activeLabelNew;
@@ -124,11 +111,17 @@ namespace Ramazan_2025 {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         #endregion
 
         #region Notifications
+        private void CheckReminder(TimeSpan remainingTime, string title, string message) {
+            if (Properties.Settings.Default.reminder && remainingTime.Hours == 0 && remainingTime.Minutes == 15 && remainingTime.Seconds == 0) {
+                ShowNotification(title, message);
+            }
+        }
+
         private void ShowNotification(string title, string message) {
-            reminderNotification.Icon = SystemIcons.Information;
             reminderNotification.Visible = true;
             reminderNotification.BalloonTipTitle = title;
             reminderNotification.BalloonTipText = message;
@@ -138,32 +131,43 @@ namespace Ramazan_2025 {
 
         #region Buttons
         private void btnSettings_Click(object sender, EventArgs e) {
-            FormSettings settingsForm = new FormSettings();
-            settingsForm.CityChanged += async (s, ev) => await GetPrayerTimes(); // Event'i dinliyoruz
+            if (_settingsForm == null || _settingsForm.IsDisposed) {
+                _settingsForm = new FormSettings();
+                _settingsForm.CityChanged += OnCityChanged; // Tek seferlik ekleniyor
+            }
 
-            // Form1'in konumunu al
+            // Formu konumlandır
+            PositionSettingsForm();
+
+            // Formu göster
+            _settingsForm.ShowDialog();
+        }
+
+
+        private async void OnCityChanged(object sender, EventArgs e) {
+            try {
+                await GetPrayerTimes();
+            } catch (Exception ex) {
+                MessageBox.Show($"Error fetching prayer times: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void PositionSettingsForm() {
             int formX = this.Location.X;
             int formY = this.Location.Y;
+            int settingsWidth = _settingsForm.Width;
 
-            // Ekran genişliğini al
-            int screenWidth = Screen.PrimaryScreen.Bounds.Width;
+            _settingsForm.StartPosition = FormStartPosition.Manual;
 
-            // FormSettings'in genişliğini al
-            int settingsWidth = settingsForm.Width;
-
-            // FormSettings'in konumunu ayarla
-            settingsForm.StartPosition = FormStartPosition.Manual;
-
-            if (formX - settingsWidth - 2 >= 0) // Sol kenarda yeterince yer var mı?
-            {
-                settingsForm.Location = new Point(formX - settingsWidth - 2, formY); // Sol üst kenara al
+            if (formX - settingsWidth - 2 >= 0) {
+                _settingsForm.Location = new Point(formX - settingsWidth - 2, formY);
             } else {
-                settingsForm.Location = new Point(formX + this.Width + 2, formY); // Sağ tarafa al
+                _settingsForm.Location = new Point(formX + this.Width + 2, formY);
             }
-            settingsForm.ShowDialog();
         }
 
         private void btnClose_Click(object sender, EventArgs e) => Application.Exit();
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Application.Exit();
         #endregion
 
         #region Movable Form
@@ -174,8 +178,8 @@ namespace Ramazan_2025 {
 
         #region Change Widget Size
         private void lblChangeSize_Click(object sender, EventArgs e) {
-            if (this.Size == new System.Drawing.Size(220, 300)) this.Size = new System.Drawing.Size(220, 130);
-            else if (this.Size == new System.Drawing.Size(220, 130)) this.Size = new System.Drawing.Size(220, 300);
+            if (this.Size == new System.Drawing.Size(220, 310)) this.Size = new System.Drawing.Size(220, 140);
+            else if (this.Size == new System.Drawing.Size(220, 140)) this.Size = new System.Drawing.Size(220, 310);
         }
         #endregion
 

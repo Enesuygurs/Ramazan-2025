@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>ramadan.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,10 @@
 
   <ItemGroup>
     <EmbeddedResource Remove="SettingsForm.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ramadan.ico" />
   </ItemGroup>
 
   <ItemGroup>
