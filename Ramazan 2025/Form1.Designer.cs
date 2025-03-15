@@ -234,7 +234,7 @@
             Opacity = 0.8D;
             ShowInTaskbar = false;
             Text = "Ramazan 2025";
-            Load += Form1_Load_1;
+            Load += Form1_Load;
             MouseDown += Form1_MouseDown;
             MouseMove += Form1_MouseMove;
             taskbarMenu.ResumeLayout(false);

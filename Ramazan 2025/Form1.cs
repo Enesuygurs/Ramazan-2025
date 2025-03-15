@@ -4,8 +4,7 @@ namespace Ramazan_2025 {
     public partial class Form1 : Form {
 
         #region Fields
-        private string _fajr, _dhuhr, _asr, _maghrib, _isha;
-        private string _tomorrowFajr;
+        private string _fajr, _dhuhr, _asr, _maghrib, _isha, _tomorrowFajr;
         private DateTime _lastCheckedDay = DateTime.Now.Date;
         private PrayerTimes _prayerTimes = new PrayerTimes();
         private Label _activeLabel = null;
@@ -30,7 +29,7 @@ namespace Ramazan_2025 {
             SetFormPosition(); // Formun konumunu ayarlayan metod
         }
 
-        private async void Form1_Load_1(object sender, EventArgs e) => await GetPrayerTimes();
+        private async void Form1_Load(object sender, EventArgs e) => await GetPrayerTimes();
 
         #region Ramadan Timetable Operations 
         public async Task GetPrayerTimes() {
