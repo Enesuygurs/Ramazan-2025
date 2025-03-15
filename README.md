@@ -30,13 +30,13 @@
 
 ## 🖥️ Screenshots
 
-## Main Form (Big Size)
+### Main Form (Big Size)
 ![image](https://github.com/user-attachments/assets/24a3ac8a-79b2-48dc-af64-b2214078c1d2)
 
-## Main Form (Small Size)
+### Main Form (Small Size)
 ![image](https://github.com/user-attachments/assets/6b42ddc2-1f23-49c5-987a-1b10e826683e)
 
-## Settings Form
+### Settings Form
 ![image](https://github.com/user-attachments/assets/1bcfc294-f9ad-4d98-bcf5-b108f241eb2e)
 
 
