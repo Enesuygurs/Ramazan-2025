@@ -3,7 +3,7 @@
 namespace Ramazan_2025
 {
     public partial class FormSettings : Form {
-        public event EventHandler CityChanged;
+        public event EventHandler? CityChanged;
         private bool _isInitializing = false;
 
         public FormSettings() {
@@ -26,7 +26,7 @@ namespace Ramazan_2025
             string registryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
 
             try {
-                using (RegistryKey regKey = Registry.CurrentUser.OpenSubKey(registryPath, true)) {
+                using (RegistryKey? regKey = Registry.CurrentUser.OpenSubKey(registryPath, true)) {
                     if (regKey == null) {
                         MessageBox.Show("Başlangıç ayarlarını değiştirirken bir hata oluştu!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -43,9 +43,9 @@ namespace Ramazan_2025
             }
         }
 
-        private async Task ChangeCityAsync() {
+        private void ChangeCityAsync() {
             try {
-                string selectedCity = cbChangeCity.SelectedItem.ToString();
+                string selectedCity = cbChangeCity.SelectedItem?.ToString() ?? "İstanbul";
                 Properties.Settings.Default.SelectedCity = selectedCity; // Şehri kaydediyoruz
                 Properties.Settings.Default.Save(); // Değişiklikleri kaydediyoruz
                 CityChanged?.Invoke(this, EventArgs.Empty);
@@ -54,9 +54,9 @@ namespace Ramazan_2025
             }
         }
 
-        private async void cbChangeCity_SelectedIndexChanged(object sender, EventArgs e) {
+        private void cbChangeCity_SelectedIndexChanged(object sender, EventArgs e) {
             if (!_isInitializing) return;
-            await ChangeCityAsync();
+            ChangeCityAsync();
         }
         #endregion
 

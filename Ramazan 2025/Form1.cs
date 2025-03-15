@@ -4,11 +4,13 @@ namespace Ramazan_2025 {
     public partial class Form1 : Form {
 
         #region Fields
-        private string _fajr, _dhuhr, _asr, _maghrib, _isha, _tomorrowFajr;
+        private string? _fajr, _dhuhr, _asr, _maghrib, _isha, _tomorrowFajr;
         private DateTime _lastCheckedDay = DateTime.Now.Date;
         private PrayerTimes _prayerTimes = new PrayerTimes();
-        private Label _activeLabel = null;
-        private FormSettings _settingsForm;
+        private Label? _activeLabel = null;
+        private FormSettings? _settingsForm;
+        private readonly Size ExpandedSize = new Size(220, 310);
+        private readonly Size CollapsedSize = new Size(220, 140);
         #endregion
 
         #region Components
@@ -77,7 +79,7 @@ namespace Ramazan_2025 {
                 DateTime tomorrowSuhoorTime = today.AddDays(1).Add(DateTime.Parse(_tomorrowFajr).TimeOfDay);
 
                 // Hangi Label aktif olacak?
-                Label activeLabelNew = null;
+                Label? activeLabelNew = null;
                 TimeSpan remainingTime;
 
                 if (currentTime < suhoorTime) {
@@ -143,7 +145,7 @@ namespace Ramazan_2025 {
         }
 
 
-        private async void OnCityChanged(object sender, EventArgs e) {
+        private async void OnCityChanged(object? sender, EventArgs e) {
             try {
                 await GetPrayerTimes();
             } catch (Exception ex) {
@@ -154,14 +156,14 @@ namespace Ramazan_2025 {
         private void PositionSettingsForm() {
             int formX = this.Location.X;
             int formY = this.Location.Y;
-            int settingsWidth = _settingsForm.Width;
-
-            _settingsForm.StartPosition = FormStartPosition.Manual;
-
-            if (formX - settingsWidth - 2 >= 0) {
-                _settingsForm.Location = new Point(formX - settingsWidth - 2, formY);
-            } else {
-                _settingsForm.Location = new Point(formX + this.Width + 2, formY);
+            if (_settingsForm != null) {
+                int settingsWidth = _settingsForm.Width; // Varsayılan bir genişlik
+                _settingsForm.StartPosition = FormStartPosition.Manual;
+                if (formX - settingsWidth - 2 >= 0) {
+                    _settingsForm.Location = new Point(formX - settingsWidth - 2, formY);
+                } else {
+                    _settingsForm.Location = new Point(formX + this.Width + 2, formY);
+                }
             }
         }
 
@@ -177,14 +179,19 @@ namespace Ramazan_2025 {
 
         #region Change Widget Size
         private void lblChangeSize_Click(object sender, EventArgs e) {
-            if (this.Size == new System.Drawing.Size(220, 310)) this.Size = new System.Drawing.Size(220, 140);
-            else if (this.Size == new System.Drawing.Size(220, 140)) this.Size = new System.Drawing.Size(220, 310);
+            if (this.Size.Equals(ExpandedSize)) {
+                this.Size = CollapsedSize;
+                lblChangeSize.Text = "⏷";
+            } else {
+                this.Size = ExpandedSize;
+                lblChangeSize.Text = "⏶";
+            }
         }
         #endregion
 
         #region Startup Position
         private void SetFormPosition() {
-            int pointX = Screen.PrimaryScreen.Bounds.Width - this.Width - 50; // Sağ kenardan 50 piksel içeri
+            int pointX = (Screen.PrimaryScreen != null) ? Screen.PrimaryScreen.Bounds.Width - this.Width - 50 : 100;
             int pointY = 50; // Üst kenardan 50 piksel aşağı
             this.StartPosition = FormStartPosition.Manual;
             this.Location = new Point(pointX, pointY);

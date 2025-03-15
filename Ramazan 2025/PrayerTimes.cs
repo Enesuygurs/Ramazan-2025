@@ -27,13 +27,13 @@ namespace Ramazan_2025 {
                 throw new InvalidOperationException("API'den gelen veri hatalı veya eksik!");
 
             return new PrayerTimesDto {
-                Fajr = todayData.Data.Timings.Fajr,
-                Dhuhr = todayData.Data.Timings.Dhuhr,
-                Asr = todayData.Data.Timings.Asr,
-                Maghrib = todayData.Data.Timings.Maghrib,
-                Isha = todayData.Data.Timings.Isha,
-                TomorrowFajr = tomorrowData.Data.Timings.Fajr,
-                HijriDay = todayData.Data.Date.Hijri.Day
+                Fajr = todayData.Data?.Timings?.Fajr,
+                Dhuhr = todayData.Data?.Timings?.Dhuhr,
+                Asr = todayData.Data?.Timings?.Asr,
+                Maghrib = todayData.Data?.Timings?.Maghrib,
+                Isha = todayData.Data?.Timings?.Isha,
+                TomorrowFajr = tomorrowData.Data?.Timings?.Fajr,
+                HijriDay = todayData.Data?.Date?.Hijri?.Day
             };
         }
 
@@ -45,42 +45,44 @@ namespace Ramazan_2025 {
             response.EnsureSuccessStatusCode();
 
             await using var stream = await response.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<PrayerApiResponse>(stream, _jsonOptions);
+            var result = await JsonSerializer.DeserializeAsync<PrayerApiResponse>(stream, _jsonOptions);
+            return result ?? new PrayerApiResponse { Data = new DataContainer { Timings = new Timings(), Date = new DateInfo { Hijri = new HijriDate() } } };
         }
     }
 
-    public class PrayerTimesDto {
-        public string Fajr { get; set; }
-        public string Dhuhr { get; set; }
-        public string Asr { get; set; }
-        public string Maghrib { get; set; }
-        public string Isha { get; set; }
-        public string TomorrowFajr { get; set; }
-        public string HijriDay { get; set; }
-    }
-
     public class PrayerApiResponse {
-        public DataContainer Data { get; set; }
+        public DataContainer? Data { get; set; }
     }
 
     public class DataContainer {
-        public Timings Timings { get; set; }
-        public DateInfo Date { get; set; }
+        public Timings? Timings { get; set; }
+        public DateInfo? Date { get; set; }
     }
 
     public class Timings {
-        public string Fajr { get; set; }
-        public string Dhuhr { get; set; }
-        public string Asr { get; set; }
-        public string Maghrib { get; set; }
-        public string Isha { get; set; }
+        public string? Fajr { get; set; }
+        public string? Dhuhr { get; set; }
+        public string? Asr { get; set; }
+        public string? Maghrib { get; set; }
+        public string? Isha { get; set; }
     }
 
     public class DateInfo {
-        public HijriDate Hijri { get; set; }
+        public HijriDate? Hijri { get; set; }
     }
 
     public class HijriDate {
-        public string Day { get; set; }
+        public string? Day { get; set; }
     }
+
+    public class PrayerTimesDto {
+        public string? Fajr { get; set; }
+        public string? Dhuhr { get; set; }
+        public string? Asr { get; set; }
+        public string? Maghrib { get; set; }
+        public string? Isha { get; set; }
+        public string? TomorrowFajr { get; set; }
+        public string? HijriDay { get; set; }
+    }
+
 }

@@ -53,7 +53,7 @@
             lblTime1.AutoSize = true;
             lblTime1.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime1.ForeColor = Color.WhiteSmoke;
-            lblTime1.Location = new Point(29, 148);
+            lblTime1.Location = new Point(29, 144);
             lblTime1.Name = "lblTime1";
             lblTime1.Size = new Size(61, 21);
             lblTime1.TabIndex = 0;
@@ -64,7 +64,7 @@
             lblTime2.AutoSize = true;
             lblTime2.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime2.ForeColor = Color.WhiteSmoke;
-            lblTime2.Location = new Point(29, 178);
+            lblTime2.Location = new Point(29, 174);
             lblTime2.Name = "lblTime2";
             lblTime2.Size = new Size(63, 21);
             lblTime2.TabIndex = 1;
@@ -75,7 +75,7 @@
             lblTime3.AutoSize = true;
             lblTime3.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime3.ForeColor = Color.WhiteSmoke;
-            lblTime3.Location = new Point(29, 208);
+            lblTime3.Location = new Point(29, 204);
             lblTime3.Name = "lblTime3";
             lblTime3.Size = new Size(53, 21);
             lblTime3.TabIndex = 2;
@@ -86,7 +86,7 @@
             lblTime4.AutoSize = true;
             lblTime4.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime4.ForeColor = Color.WhiteSmoke;
-            lblTime4.Location = new Point(29, 238);
+            lblTime4.Location = new Point(29, 234);
             lblTime4.Name = "lblTime4";
             lblTime4.Size = new Size(58, 21);
             lblTime4.TabIndex = 3;
@@ -97,7 +97,7 @@
             lblTime5.AutoSize = true;
             lblTime5.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTime5.ForeColor = Color.WhiteSmoke;
-            lblTime5.Location = new Point(29, 268);
+            lblTime5.Location = new Point(29, 264);
             lblTime5.Name = "lblTime5";
             lblTime5.Size = new Size(51, 21);
             lblTime5.TabIndex = 4;
@@ -257,7 +257,6 @@
         private NotifyIcon reminderNotification;
         private Label lblChangeSize;
         private Label lblRamadanDay;
-        private PictureBox pictureBox1;
         private ContextMenuStrip taskbarMenu;
         private ToolStripMenuItem exitToolStripMenuItem;
         private Label lblCity;
