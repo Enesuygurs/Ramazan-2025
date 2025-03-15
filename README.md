@@ -11,8 +11,8 @@
 ✅ **Startup Option** — Option to run the application automatically on Windows startup.  
 ✅ **City Selection** — Allows users to select their city for accurate prayer times.  
 ✅ **Notifications** — Sends reminders 15 minutes before sahur and iftar times.  
-✅ **Optimized Performance** — Uses minimal system resources for smooth operation.
-✅ Supports All 81 Cities in Turkey — Provides accurate prayer times for every city in Turkey.
+✅ **Optimized Performance** — Uses minimal system resources for smooth operation.  
+✅ **Supports All 81 Cities in Turkey** — Provides accurate prayer times for every city in Turkey.
 
 ## 🚀 Installation
 
