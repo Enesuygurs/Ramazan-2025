@@ -12,6 +12,7 @@
 ✅ **City Selection** — Allows users to select their city for accurate prayer times.  
 ✅ **Notifications** — Sends reminders 15 minutes before sahur and iftar times.  
 ✅ **Optimized Performance** — Uses minimal system resources for smooth operation.
+✅ Supports All 81 Cities in Turkey — Provides accurate prayer times for every city in Turkey.
 
 ## 🚀 Installation
 
@@ -29,12 +30,15 @@
 
 ## 🖥️ Screenshots
 
-# Main Form (Big Size)
-![image](https://github.com/user-attachments/assets/b5d4ec7f-8900-46b3-9766-e7c3c530e73e)
-# Main Form (Small Size)
-![image](https://github.com/user-attachments/assets/e2accd78-7907-40a4-9258-60a5d2ce0955)
-# Settings Form
-![image](https://github.com/user-attachments/assets/9d7cc53f-5282-4570-a1cd-bd7dce5e709f)
+## Main Form (Big Size)
+![image](https://github.com/user-attachments/assets/24a3ac8a-79b2-48dc-af64-b2214078c1d2)
+
+## Main Form (Small Size)
+![image](https://github.com/user-attachments/assets/6b42ddc2-1f23-49c5-987a-1b10e826683e)
+
+## Settings Form
+![image](https://github.com/user-attachments/assets/1bcfc294-f9ad-4d98-bcf5-b108f241eb2e)
+
 
 
 ## 🛠️ Technologies Used
