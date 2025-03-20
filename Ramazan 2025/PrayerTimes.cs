@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,8 +18,11 @@ namespace Ramazan_2025 {
             if (string.IsNullOrWhiteSpace(city))
                 throw new ArgumentException("Şehir adı boş olamaz.", nameof(city));
 
-            string todayUrl = BuildApiUrl(city, DateTime.UtcNow);
-            string tomorrowUrl = BuildApiUrl(city, DateTime.UtcNow.AddDays(1));
+            // Türkiye saatine göre tarih al
+            DateTime turkiyeNow = DateTime.UtcNow.AddHours(3);
+
+            string todayUrl = BuildApiUrl(city, turkiyeNow);
+            string tomorrowUrl = BuildApiUrl(city, turkiyeNow.AddDays(1));
 
             PrayerApiResponse todayData = await FetchPrayerTimesAsync(todayUrl);
             PrayerApiResponse tomorrowData = await FetchPrayerTimesAsync(tomorrowUrl);
