@@ -45,7 +45,9 @@
             lblChangeSize = new Label();
             lblRamadanDay = new Label();
             lblCity = new Label();
+            pnlButtons = new Panel();
             taskbarMenu.SuspendLayout();
+            pnlButtons.SuspendLayout();
             SuspendLayout();
             // 
             // lblTime1
@@ -120,7 +122,7 @@
             btnClose.AutoSize = true;
             btnClose.Font = new Font("Webdings", 11.25F, FontStyle.Bold);
             btnClose.ForeColor = Color.White;
-            btnClose.Location = new Point(193, 3);
+            btnClose.Location = new Point(44, 3);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(25, 20);
             btnClose.TabIndex = 6;
@@ -132,7 +134,7 @@
             btnSettings.AutoSize = true;
             btnSettings.Font = new Font("Segoe UI Symbol", 12F, FontStyle.Bold);
             btnSettings.ForeColor = Color.White;
-            btnSettings.Location = new Point(173, 2);
+            btnSettings.Location = new Point(24, 2);
             btnSettings.Name = "btnSettings";
             btnSettings.Size = new Size(24, 21);
             btnSettings.TabIndex = 7;
@@ -143,9 +145,9 @@
             // 
             lblKalanZaman.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblKalanZaman.ForeColor = Color.WhiteSmoke;
-            lblKalanZaman.Location = new Point(50, 85);
+            lblKalanZaman.Location = new Point(31, 84);
             lblKalanZaman.Name = "lblKalanZaman";
-            lblKalanZaman.Size = new Size(120, 42);
+            lblKalanZaman.Size = new Size(158, 52);
             lblKalanZaman.TabIndex = 8;
             lblKalanZaman.Text = "Kalan Süre\r\n08:02:25";
             lblKalanZaman.TextAlign = ContentAlignment.MiddleCenter;
@@ -181,7 +183,7 @@
             lblChangeSize.AutoSize = true;
             lblChangeSize.Font = new Font("Segoe UI Symbol", 11F, FontStyle.Bold);
             lblChangeSize.ForeColor = Color.White;
-            lblChangeSize.Location = new Point(151, 3);
+            lblChangeSize.Location = new Point(2, 3);
             lblChangeSize.Name = "lblChangeSize";
             lblChangeSize.Size = new Size(25, 20);
             lblChangeSize.TabIndex = 9;
@@ -210,6 +212,18 @@
             lblCity.Text = "İstanbul";
             lblCity.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // pnlButtons
+            // 
+            pnlButtons.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            pnlButtons.BackColor = Color.Black;
+            pnlButtons.Controls.Add(btnClose);
+            pnlButtons.Controls.Add(btnSettings);
+            pnlButtons.Controls.Add(lblChangeSize);
+            pnlButtons.Location = new Point(149, 0);
+            pnlButtons.Name = "pnlButtons";
+            pnlButtons.Size = new Size(75, 25);
+            pnlButtons.TabIndex = 12;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -218,18 +232,18 @@
             ClientSize = new Size(220, 310);
             Controls.Add(lblCity);
             Controls.Add(lblRamadanDay);
-            Controls.Add(lblChangeSize);
             Controls.Add(lblKalanZaman);
-            Controls.Add(btnSettings);
-            Controls.Add(btnClose);
             Controls.Add(Title);
             Controls.Add(lblTime5);
             Controls.Add(lblTime4);
             Controls.Add(lblTime3);
             Controls.Add(lblTime2);
             Controls.Add(lblTime1);
+            Controls.Add(pnlButtons);
             FormBorderStyle = FormBorderStyle.None;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximumSize = new Size(225, 320);
+            MinimumSize = new Size(220, 310);
             Name = "Form1";
             Opacity = 0.8D;
             ShowInTaskbar = false;
@@ -237,7 +251,10 @@
             Load += Form1_Load;
             MouseDown += Form1_MouseDown;
             MouseMove += Form1_MouseMove;
+            Resize += Form1_Resize;
             taskbarMenu.ResumeLayout(false);
+            pnlButtons.ResumeLayout(false);
+            pnlButtons.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -260,5 +277,6 @@
         private ContextMenuStrip taskbarMenu;
         private ToolStripMenuItem exitToolStripMenuItem;
         private Label lblCity;
+        private Panel pnlButtons;
     }
 }
